@@ -61,9 +61,15 @@ func GetUserHandler(c *gin.Context) {
 
 func UpdatePasswordHandler(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
+
+	if err != nil {
+		c.JSON(400, gin.H{"message": "Invalid user id"})
+		return
+	}
+
 	var body struct {
-		CurrentPassword string `json:"currentPassword" binding:"required"`
-		NewPassword     string `json:"newPassword" binding:"required"`
+		CurrentPassword string `json:"current_password" binding:"required"`
+		NewPassword     string `json:"new_password" binding:"required"`
 	}
 
 	if err := c.BindJSON(&body); err != nil {
@@ -76,9 +82,7 @@ func UpdatePasswordHandler(c *gin.Context) {
 		NewPassword:     body.NewPassword,
 	}
 
-	err := usecases.UpdatePasswordUseCase(id, ctx)
-
-	if err != nil {
+	if err := usecases.UpdatePasswordUseCase(id, ctx); err != nil {
 		c.JSON(400, gin.H{"message": err.Error()})
 		return
 	}

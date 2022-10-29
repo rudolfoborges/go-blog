@@ -25,7 +25,7 @@ func CreateUserUseCase(user *models.User) error {
 	return nil
 }
 
-func UpdatePasswordUseCase(id int, ctx ctx.UpdatePasswordContext) error {
+func UpdatePasswordUseCase(id int, ctx ctx.UpdatePasswordContext) (err error) {
 	var user models.User
 	if err := config.DB.First(&user, id).Error; err != nil {
 		return errors.New("User not found")

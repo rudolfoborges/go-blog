@@ -20,6 +20,7 @@ func main() {
 		v1.POST("/users", controllers.CreateUserHandler)
 		v1.GET("/users", controllers.GetAllUsersHandler)
 		v1.GET("/users/:id", controllers.GetUserHandler)
+		v1.PUT("/users/:id", controllers.UpdatePasswordHandler)
 	}
 
 	r.Run(":3333")
