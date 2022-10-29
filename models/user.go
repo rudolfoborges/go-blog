@@ -27,3 +27,30 @@ func (u *User) BeforeCreate(tx *gorm.DB) (err error) {
 	u.Password = string(hashPassword)
 	return
 }
+
+func (u *User) UpdatePassword(password string) (err error) {
+	if u.Password != "" {
+		hashPassword, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
+
+		if err != nil {
+			return err
+		}
+
+		u.Password = string(hashPassword)
+	}
+
+	return
+}
+
+func (u *User) ComparePassword(password string) error {
+	return bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(password))
+}
+
+func (u User) Serialize() map[string]interface{} {
+	return map[string]interface{}{
+		"id":    u.ID,
+		"name":  u.Name,
+		"email": u.Email,
+		"role":  u.Role,
+	}
+}

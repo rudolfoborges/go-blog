@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/rudolfoborges/go-blog/config"
+	"github.com/rudolfoborges/go-blog/ctx"
 	"github.com/rudolfoborges/go-blog/models"
 )
 
@@ -20,6 +21,22 @@ func CreateUserUseCase(user *models.User) error {
 		log.Println("Failed to create user", err)
 		return err.Error
 	}
+
+	return nil
+}
+
+func UpdatePasswordUseCase(id int, ctx ctx.UpdatePasswordContext) error {
+	var user models.User
+	if err := config.DB.First(&user, id).Error; err != nil {
+		return errors.New("User not found")
+	}
+
+	if err := user.ComparePassword(ctx.CurrentPassword); err != nil {
+		return errors.New("Current password is incorrect")
+	}
+
+	user.UpdatePassword(ctx.NewPassword)
+	config.DB.Save(&user)
 
 	return nil
 }

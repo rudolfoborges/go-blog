@@ -18,6 +18,8 @@ func main() {
 	v1 := r.Group("/v1")
 	{
 		v1.POST("/users", controllers.CreateUserHandler)
+		v1.GET("/users", controllers.GetAllUsersHandler)
+		v1.GET("/users/:id", controllers.GetUserHandler)
 	}
 
 	r.Run(":3333")
