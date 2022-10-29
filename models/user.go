@@ -1,12 +1,29 @@
 package models
 
-import "gorm.io/gorm"
+import (
+	"time"
+
+	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
+)
 
 type User struct {
-	gorm.Model
+	ID        uint `gorm:"primaryKey"`
+	Name      string
+	Email     string
+	Password  string
+	Role      string
+	CreatedAt time.Time `gorm:"autoCreateTime"`
+	UpdatedAt time.Time `gorm:"autoUpdateTime"`
+}
 
-	Name     string
-	Email    string
-	Password string
-	Role     string
+func (u *User) BeforeCreate(tx *gorm.DB) (err error) {
+	hashPassword, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
+
+	if err != nil {
+		return err
+	}
+
+	u.Password = string(hashPassword)
+	return
 }
